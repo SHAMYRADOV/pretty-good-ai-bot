@@ -12,86 +12,54 @@ Automated testing system that calls Pretty Good AI's medical office voice bot us
 - Tracks **cost** per call and across the full run
 - Generates a final **bug report** summarizing all findings
 
-## Project Structure
-
-```
-src/
-  run_one_call.py       # Main entry point — runs single calls or full sequences
-  assistant_factory.py  # All patient personas and chained scenario definitions
-  vapi_client.py        # VAPI API client (create assistants, make calls, poll status)
-  storage.py            # Saves transcripts, recordings, analysis, and cost logs
-runs/                   # Created at runtime (gitignored)
-  transcripts/          # Call data + transcripts (JSON)
-  recordings/           # Call audio files (WAV)
-  analysis/             # Per-call bug analysis (JSON)
-  reports/              # Final aggregated bug reports (JSON)
-  cost_log.json         # Running cost tracker across all calls
-```
-
-## Setup
-
-### 1. Clone the repo
+## Quick Start
 
 ```bash
-git clone <repo-url>
-cd prettygoodai-bot
-```
-
-### 2. Create a virtual environment
-
-```bash
+git clone https://github.com/SHAMYRADOV/pretty-good-ai-bot.git
+cd pretty-good-ai-bot
 python3 -m venv .venv
 source .venv/bin/activate
-```
-
-### 3. Install dependencies
-
-```bash
 pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your API keys (see below)
+python3 src/run_one_call.py sequence 12
 ```
 
-### 4. Set up environment variables
+## Environment Variables
 
-Copy the example file and fill in your keys:
+> **Do not commit your `.env` file.** It is already in `.gitignore`.
+
+Copy the example and fill in your keys:
 
 ```bash
 cp .env.example .env
 ```
 
-Then edit `.env` with your actual values:
+| Variable | Description | Where to get it |
+|----------|-------------|-----------------|
+| `VAPI__PRIVATE_API_KEY` | VAPI private/secret API key | [VAPI Dashboard](https://dashboard.vapi.ai) → API Keys |
+| `VAPI__PUBLIC_API_KEY` | VAPI public API key | Same dashboard |
+| `VAPI_PHONE_NUMBER_ID` | ID of your VAPI phone number (caller ID) | VAPI Dashboard → Phone Numbers |
+| `TARGET_PHONE_NUMBER` | The phone number of the bot to test | Provided by Pretty Good AI |
+
+Example `.env`:
 
 ```env
-# VAPI AI Configuration
 VAPI__PRIVATE_API_KEY=your_vapi_private_key_here
 VAPI__PUBLIC_API_KEY=your_vapi_public_key_here
 VAPI_PHONE_NUMBER_ID=your_vapi_phone_number_id_here
-
-# Target Configuration
 TARGET_PHONE_NUMBER=+18054398008
 ```
 
-You'll need:
-- A [VAPI](https://vapi.ai) account with API keys
-- A VAPI phone number (used as the caller ID for outbound calls)
-- The target phone number of the bot you want to test
-
 ## Usage
 
-Make sure the virtual environment is activated before running:
+Make sure the virtual environment is activated:
 
 ```bash
 source .venv/bin/activate
 ```
 
-### Run a single test call
-
-```bash
-python3 src/run_one_call.py single appointment
-```
-
-Available personas: `appointment`, `elderly`, `urgent`, `insurance`, `random`
-
-### Run a full test sequence
+### Run the full 12-call test (single command)
 
 ```bash
 python3 src/run_one_call.py sequence 12
@@ -104,6 +72,14 @@ This runs 12 calls in order:
 4. **Standalone calls** (5 calls) — Individual personas cycling through appointment, elderly, urgent, insurance
 
 Each call waits 20-30 seconds between calls to avoid overlap.
+
+### Run a single test call
+
+```bash
+python3 src/run_one_call.py single appointment
+```
+
+Available personas: `appointment`, `elderly`, `urgent`, `insurance`, `random`
 
 ### Run a follow-up call
 
@@ -140,3 +116,19 @@ Voice settings are in `src/assistant_factory.py` — all personas use the same E
 - **OpenAI GPT-4o** — Powers the patient conversation AI
 - **ElevenLabs** — Text-to-speech (voice: "Will")
 - **Python 3.12** — asyncio + aiohttp for async API calls
+
+## Project Structure
+
+```
+src/
+  run_one_call.py       # Main entry point — runs single calls or full sequences
+  assistant_factory.py  # All patient personas and chained scenario definitions
+  vapi_client.py        # VAPI API client (create assistants, make calls, poll status)
+  storage.py            # Saves transcripts, recordings, analysis, and cost logs
+runs/                   # Created at runtime (gitignored)
+  transcripts/          # Call data + transcripts (JSON)
+  recordings/           # Call audio files (WAV)
+  analysis/             # Per-call bug analysis (JSON)
+  reports/              # Final aggregated bug reports (JSON)
+  cost_log.json         # Running cost tracker across all calls
+```
