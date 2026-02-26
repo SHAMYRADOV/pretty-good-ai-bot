@@ -27,8 +27,6 @@ python3 src/run_one_call.py sequence 12
 
 ## Environment Variables
 
-> **Do not commit your `.env` file.** It is already in `.gitignore`.
-
 Copy the example and fill in your keys:
 
 ```bash
