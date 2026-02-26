@@ -1,0 +1,9 @@
+python-dotenv
+requests
+vapi-python
+asyncio
+aiohttp
+pydantic
+datetime
+json5
+typing-extensions
